@@ -15227,7 +15227,7 @@ Main = (function()
 		local progressBar = gui.Main.Holder.ProgressBar
 		local tweenS = service.TweenService
 
-		local renderStepped = service.RunService.RenderStepped
+		local renderStepped = game:GetService("RunService").RenderStepped
 		local signalWait = renderStepped.wait
 		local fastwait = function(s)
 			if not s then return signalWait(renderStepped) end
