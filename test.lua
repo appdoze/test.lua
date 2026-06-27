@@ -924,7 +924,7 @@ local function main()
 	local entryTemplate,treeFrame,toolBar,descendantAddedCon,descendantRemovingCon,itemChangedCon
 	local ffa = game.FindFirstAncestorWhichIsA
 	local getDescendants = game.GetDescendants
-	local getTextSize = service.TextService.GetTextSize
+	local getTextSize = game:GetService("TextService").GetTextSize
 	local updateDebounce,refreshDebounce = false,false
 	local nilNode = {Obj = Instance.new("Folder")}
 	local idCounter = 0
@@ -1269,7 +1269,7 @@ local function main()
 		local tSort = table.sort
 		local sortFunc = Explorer.NodeSorter
 		local isSearching = (expanded == Explorer.SearchExpanded)
-		local textServ = service.TextService
+		local textServ = game:GetService("TextService")
 
 		local function recur(root,depth)
 			if depth > maxDepth then maxDepth = depth end
@@ -1363,7 +1363,7 @@ local function main()
 		})
 		dragOutline.Parent = treeFrame
 
-		local mouse = Main.Mouse or service.Players.LocalPlayer:GetMouse()
+		local mouse = Main.Mouse or game:GetService("Players").LocalPlayer:GetMouse()
 		local function move()
 			local posX = mouse.X - offX
 			local posY = mouse.Y - offY
@@ -1382,7 +1382,7 @@ local function main()
 		end
 		move()
 
-		local input = service.UserInputService
+		local input = game:GetService("UserInputService")
 		local mouseEvent,releaseEvent
 
 		mouseEvent = input.InputChanged:Connect(function(input)
@@ -1467,14 +1467,14 @@ local function main()
 				local listOffsetX = startX - treeFrame.AbsolutePosition.X
 				local listOffsetY = startY - treeFrame.AbsolutePosition.Y
 
-				releaseEvent = service.UserInputService.InputEnded:Connect(function(input)
+				releaseEvent = game:GetService("UserInputService").InputEnded:Connect(function(input)
 					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 						releaseEvent:Disconnect()
 						mouseEvent:Disconnect()
 					end
 				end)
 
-				mouseEvent = service.UserInputService.InputChanged:Connect(function(input)
+				mouseEvent = game:GetService("UserInputService").InputChanged:Connect(function(input)
 					if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
 						local currentX, currentY
 
@@ -2460,7 +2460,7 @@ local function main()
 			local newSelection = {}
 			local sList = selection.List
 
-			for i,v in next, service.Players:GetPlayers() do
+			for i,v in next, game:GetService("Players"):GetPlayers() do
 				if v.Character and nodes[v.Character] then
 					if i == 1 then Explorer.MakeNodeVisible(v.Character) end
 					table.insert(newSelection, nodes[v.Character])
@@ -2627,7 +2627,7 @@ local function main()
 	Explorer.DefaultProps = {
 		["BasePart"] = {
 			Position = function(Obj)
-				local Player = service.Players.LocalPlayer
+				local Player = game:GetService("Players").LocalPlayer
 				if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
 					Obj.Position = (Player.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -10)).p
 				end
@@ -2760,10 +2760,10 @@ local function main()
 				local num = tonumber(argString)
 				if not num then return end
 
-				if not service.Players.LocalPlayer.Character or not service.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") or not service.Players.LocalPlayer.Character.HumanoidRootPart:IsA("BasePart") then return end
+				if not game:GetService("Players").LocalPlayer.Character or not game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart") or not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:IsA("BasePart") then return end
 
 				return {
-					Headers = {"local isa = game.IsA", "local hrp = service.Players.LocalPlayer.Character.HumanoidRootPart"},
+					Headers = {"local isa = game.IsA", "local hrp = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart"},
 					Setups = {"local hrpPos = hrp.Position"},
 					ObjectDefs = {"local isBasePart = isa(obj,'BasePart')"},
 					Predicate = "(isBasePart and (obj.Position-hrpPos).Magnitude <= "..num..")"
@@ -2772,7 +2772,7 @@ local function main()
 		},
 		Specific = {
 			["players"] = function()
-				return function() return service.Players:GetPlayers() end
+				return function() return game:GetService("Players"):GetPlayers() end
 			end,
 			["loadedmodules"] = function()
 				return env.getloadedmodules
@@ -3525,7 +3525,7 @@ end
 local function main()
 	local Lib = {}
 
-	local renderStepped = service.RunService.RenderStepped
+	local renderStepped = game:GetService("RunService").RenderStepped
 	local signalWait = renderStepped.wait
 	local PH = newproxy() -- Placeholder, must be replaced in constructor
 	local SIGNAL = newproxy()
@@ -3586,11 +3586,11 @@ local function main()
 	end
 
 	Lib.IsShiftDown = function()
-		return service.UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) or service.UserInputService:IsKeyDown(Enum.KeyCode.RightShift)
+		return game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftShift) or game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.RightShift)
 	end
 
 	Lib.IsCtrlDown = function()
-		return service.UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) or service.UserInputService:IsKeyDown(Enum.KeyCode.RightControl)
+		return game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) or game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.RightControl)
 	end
 
 	Lib.CreateArrow = function(size,num,dir)
@@ -5495,7 +5495,7 @@ local function main()
 
 	Lib.ScrollBar = (function()
 		local funcs = {}
-		local user = service.UserInputService
+		local user = game:GetService("UserInputService")
 		local mouse = plr:GetMouse()
 		local checkMouseInGui = Lib.CheckMouseInGui
 		local createArrow = Lib.CreateArrow
@@ -5959,7 +5959,7 @@ local function main()
 
 						self.Resizing = resizer
 
-						releaseEvent = service.UserInputService.InputEnded:Connect(function(input)
+						releaseEvent = game:GetService("UserInputService").InputEnded:Connect(function(input)
 							if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 								releaseEvent:Disconnect()
 								if mouseEvent then mouseEvent:Disconnect() end
@@ -5968,7 +5968,7 @@ local function main()
 							end
 						end)
 
-						mouseEvent = service.UserInputService.InputChanged:Connect(function(input)
+						mouseEvent = game:GetService("UserInputService").InputChanged:Connect(function(input)
 							if self.Resizable and self.ResizableInternal and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
 								self:StopTweens()
 								local deltaX = input.Position.X - resizer.AbsolutePosition.X - offX
@@ -6125,7 +6125,7 @@ local function main()
 
 						guiDragging = true
 
-						releaseEvent = service.UserInputService.InputEnded:Connect(function(input)
+						releaseEvent = game:GetService("UserInputService").InputEnded:Connect(function(input)
 							if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 								releaseEvent:Disconnect()
 								if mouseEvent then mouseEvent:Disconnect() end
@@ -6138,7 +6138,7 @@ local function main()
 							end
 						end)
 
-						mouseEvent = service.UserInputService.InputChanged:Connect(function(input)
+						mouseEvent = game:GetService("UserInputService").InputChanged:Connect(function(input)
 							if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) and self.Draggable and not self.Closed and ButtonDown then
 								if self.Aligned then
 									if leftSide.Resizing or rightSide.Resizing then return end
@@ -6270,7 +6270,7 @@ local function main()
 
 			if not noTween then
 				local function insertTween(...)
-					local tween = service.TweenService:Create(...)
+					local tween = game:GetService("TweenService"):Create(...)
 					tweens[#tweens+1] = tween
 					tween:Play()
 				end
@@ -6332,7 +6332,7 @@ local function main()
 						side.Resizing = resizer
 						resizer.BackgroundColor3 = theme.MainColor2
 
-						releaseEvent = service.UserInputService.InputEnded:Connect(function(input)
+						releaseEvent = game:GetService("UserInputService").InputEnded:Connect(function(input)
 							if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 								releaseEvent:Disconnect()
 								mouseEvent:Disconnect()
@@ -6341,7 +6341,7 @@ local function main()
 							end
 						end)
 
-						mouseEvent = service.UserInputService.InputChanged:Connect(function(input)
+						mouseEvent = game:GetService("UserInputService").InputChanged:Connect(function(input)
 							if not resizer.Parent then
 								releaseEvent:Disconnect()
 								mouseEvent:Disconnect()
@@ -6431,7 +6431,7 @@ local function main()
 					v.GuiElems.Main.Size = size
 					v.GuiElems.Main.Position = pos
 				else
-					local tween = service.TweenService:Create(v.GuiElems.Main,sideTweenInfo,{Size = size, Position = pos})
+					local tween = game:GetService("TweenService"):Create(v.GuiElems.Main,sideTweenInfo,{Size = size, Position = pos})
 					tweens[#tweens+1] = tween
 					tween:Play()
 				end
@@ -6723,7 +6723,7 @@ local function main()
 		end
 
 		funcs.DoTween = function(self,...)
-			local tween = service.TweenService:Create(...)
+			local tween = game:GetService("TweenService"):Create(...)
 			self.Tweens[#self.Tweens+1] = tween
 			tween:Play()
 		end
@@ -6741,7 +6741,7 @@ local function main()
 
 		funcs.ShowAndFocus = function(self,data)
 			static.ShowWindow(self,data)
-			service.RunService.RenderStepped:wait()
+			game:GetService("RunService").RenderStepped:Wait()
 			self:Focus()
 		end
 
@@ -7076,7 +7076,7 @@ local function main()
 
 		funcs.AddDivider = function(self,text)
 			self.QueuedDivider = false
-			local textWidth = text and service.TextService:GetTextSize(text,14,Enum.Font.SourceSans,Vector2.new(999999999,20)).X or nil
+			local textWidth = text and game:GetService("TextService"):GetTextSize(text,14,Enum.Font.SourceSans,Vector2.new(999999999,20)).X or nil
 			table.insert(self.Items,{Divider = true, Text = text, TextSize = textWidth and textWidth+4})
 			self.Updated = nil
 		end
@@ -7235,7 +7235,7 @@ local function main()
 			-- Close event
 			local closable
 			if self.CloseEvent then self.CloseEvent:Disconnect() end
-			self.CloseEvent = service.UserInputService.InputBegan:Connect(function(input)
+			self.CloseEvent = game:GetService("UserInputService").InputBegan:Connect(function(input)
 				if not closable then return end
 
 				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -7280,7 +7280,7 @@ local function main()
 
 		local mt = {__index = funcs}
 		local function new()
-			if not mouse then mouse = Main.Mouse or service.Players.LocalPlayer:GetMouse() end
+			if not mouse then mouse = Main.Mouse or game:GetService("Players").LocalPlayer:GetMouse() end
 
 			local obj = setmetatable({
 				Width = 200,
@@ -7494,7 +7494,7 @@ local function main()
 			[("%s [^%s]"):format(tabSub,tabSub)] = 1,
 		}
 
-		local tweenService = service.TweenService
+		local tweenService = game:GetService("TweenService")
 		local lineTweens = {}
 
 		local function initBuiltIn()
@@ -7587,7 +7587,7 @@ local function main()
 						obj:Refresh()
 					end
 
-					releaseEvent = service.UserInputService.InputEnded:Connect(function(input)
+					releaseEvent = game:GetService("UserInputService").InputEnded:Connect(function(input)
 						if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 							releaseEvent:Disconnect()
 							mouseEvent:Disconnect()
@@ -7597,7 +7597,7 @@ local function main()
 						end
 					end)
 
-					mouseEvent = service.UserInputService.InputChanged:Connect(function(input)
+					mouseEvent = game:GetService("UserInputService").InputChanged:Connect(function(input)
 						if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
 							local upDelta = mouse.Y - codeFrame.AbsolutePosition.Y
 							local downDelta = mouse.Y - codeFrame.AbsolutePosition.Y - codeFrame.AbsoluteSize.Y
@@ -7739,7 +7739,7 @@ local function main()
 				self.EditBoxEvent:Disconnect()
 			end
 
-			self.EditBoxEvent = service.UserInputService.InputBegan:Connect(function(input)
+			self.EditBoxEvent = game:GetService("UserInputService").InputBegan:Connect(function(input)
 				if input.UserInputType ~= Enum.UserInputType.Keyboard then return end
 
 				local keycodes = Enum.KeyCode
@@ -7747,7 +7747,7 @@ local function main()
 
 				local function setupMove(key,func)
 					local endCon,finished
-					endCon = service.UserInputService.InputEnded:Connect(function(input)
+					endCon = game:GetService("UserInputService").InputEnded:Connect(function(input)
 						if input.KeyCode ~= key then return end
 						endCon:Disconnect()
 						finished = true
@@ -7851,7 +7851,7 @@ local function main()
 						self:ResetSelection(true)
 						self:JumpToCursor()
 					end)
-				elseif service.UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
+				elseif game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then
 					if keycode == keycodes.A then
 						self.SelectionRange = {{0,0},{#self.Lines[#self.Lines],#self.Lines-1}}
 						self:SetCopyableSelection()
@@ -8671,9 +8671,9 @@ local function main()
 			local size = max(abssz.X, abssz.Y) * 5/3
 
 			TweenSize(circle, ud2o(size, size), "Out", "Quart", 0.4)
-			service.TweenService:Create(circle, ti(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {BackgroundTransparency = 1}):Play()
+			game:GetService("TweenService"):Create(circle, ti(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {BackgroundTransparency = 1}):Play()
 
-			service.Debris:AddItem(circle, 0.4)
+			game:GetService("Debris"):AddItem(circle, 0.4)
 		end
 
 		local function initGui(self,frame)
@@ -8751,7 +8751,7 @@ local function main()
 			--[[checkbox.InputBegan:Connect(function(i)
 				if i.UserInputType == Enum.UserInputType.MouseButton1 then
 					local release
-					release = service.UserInputService.InputEnded:Connect(function(input)
+					release = game:GetService("UserInputService").InputEnded:Connect(function(input)
 						if input.UserInputType == Enum.UserInputType.MouseButton1 then
 							release:Disconnect()
 
@@ -8834,7 +8834,7 @@ local function main()
 			if self.Toggled then
 				if self.Style == 0 then
 					if anim then
-						self.OutlineColorTween = service.TweenService:Create(self.GuiElems.Outline, ti(4/15, Enum.EasingStyle.Circular, Enum.EasingDirection.Out), {BackgroundColor3 = self.Colors.Primary})
+						self.OutlineColorTween = game:GetService("TweenService"):Create(self.GuiElems.Outline, ti(4/15, Enum.EasingStyle.Circular, Enum.EasingDirection.Out), {BackgroundColor3 = self.Colors.Primary})
 						self.OutlineColorTween:Play()
 						delay(0.15, function()
 							if setStateTime ~= self.LastSetStateTime then return end
@@ -8855,7 +8855,7 @@ local function main()
 			else
 				if self.Style == 0 then
 					if anim then
-						self.OutlineColorTween = service.TweenService:Create(self.GuiElems.Outline, ti(4/15, Enum.EasingStyle.Circular, Enum.EasingDirection.In), {BackgroundColor3 = self.Colors.Secondary})
+						self.OutlineColorTween = game:GetService("TweenService"):Create(self.GuiElems.Outline, ti(4/15, Enum.EasingStyle.Circular, Enum.EasingDirection.In), {BackgroundColor3 = self.Colors.Secondary})
 						self.OutlineColorTween:Play()
 						delay(0.15, function()
 							if setStateTime ~= self.LastSetStateTime then return end
@@ -8919,7 +8919,7 @@ local function main()
 	Lib.BrickColorPicker = (function()
 		local funcs = {}
 		local paletteCount = 0
-		local mouse = service.Players.LocalPlayer:GetMouse()
+		local mouse = game:GetService("Players").LocalPlayer:GetMouse()
 		local hexStartX = 4
 		local hexSizeX = 27
 		local hexTriangleStart = 1
@@ -9037,7 +9037,7 @@ local function main()
 			local closable = false
 			if self.CloseEvent then self.CloseEvent:Disconnect() end
 
-			self.CloseEvent = service.UserInputService.InputBegan:Connect(function(input)
+			self.CloseEvent = game:GetService("UserInputService").InputBegan:Connect(function(input)
 				if not closable or (input.UserInputType ~= Enum.UserInputType.MouseButton1 and input.UserInputType ~= Enum.UserInputType.Touch) then
 					return
 				end
@@ -9232,8 +9232,8 @@ local function main()
 			local greenInput = pickerFrame.Green.Input
 			local blueInput = pickerFrame.Blue.Input
 
-			local user = service.UserInputService
-			local mouse = service.Players.LocalPlayer:GetMouse()
+			local user = game:GetService("UserInputService")
+			local mouse = game:GetService("Players").LocalPlayer:GetMouse()
 
 			local hue,sat,val = 0,0,1
 			local red,green,blue = 1,1,1
@@ -9584,8 +9584,8 @@ local function main()
 			local currentPoint = nil
 			local resetSequence = nil
 
-			local user = service.UserInputService
-			local mouse = service.Players.LocalPlayer:GetMouse()
+			local user = game:GetService("UserInputService")
+			local mouse = game:GetService("Players").LocalPlayer:GetMouse()
 
 			for i = 2,10 do
 				local newLine = Instance.new("Frame")
@@ -10080,8 +10080,8 @@ local function main()
 			local closeButton = pickerFrame.Close
 			local topClose = pickerTopBar.Close
 
-			local user = service.UserInputService
-			local mouse = service.Players.LocalPlayer:GetMouse()
+			local user = game:GetService("UserInputService")
+			local mouse = game:GetService("Players").LocalPlayer:GetMouse()
 
 			local colors = {{Color3.new(1,0,1),0},{Color3.new(0.2,0.9,0.2),0.2},{Color3.new(0.4,0.5,0.9),0.7},{Color3.new(0.6,1,1),1}}
 			local resetSequence = nil
@@ -10350,7 +10350,7 @@ local function main()
 	end)()
 
 	Lib.ViewportTextBox = (function()
-		local textService = service.TextService
+		local textService = game:GetService("TextService")
 
 		local props = {
 			OffsetX = 0,
@@ -10718,7 +10718,7 @@ local function main()
 				end)
 
 				local release
-				release = service.UserInputService.InputEnded:Connect(function(input)
+				release = game:GetService("UserInputService").InputEnded:Connect(function(input)
 					if input.UserInputType == Enum.UserInputType["MouseButton" .. button] then
 						release:Disconnect()
 						if Lib.CheckMouseInGui(item) and self.LastButton == button and self.LastItem == item then
@@ -11785,7 +11785,7 @@ local function main()
 		local count = 1
 		local maxWidth,maxDepth = 0,1
 
-		local textServ = service.TextService
+		local textServ = game:GetService("TextService")
 		local getTextSize = textServ.GetTextSize
 		local font = Enum.Font.SourceSans
 		local size = Vector2.new(math.huge,20)
@@ -11916,7 +11916,7 @@ local function main()
 				local fullNameFrame = Properties.FullNameFrame
 				local nameArr = string.split(prop.Class.."."..prop.Name..(prop.SubName or ""),".")
 				local dispName = prop.DisplayName or nameArr[#nameArr]
-				local sizeX = service.TextService:GetTextSize(dispName,14,Enum.Font.SourceSans,Vector2.new(math.huge,20)).X
+				local sizeX = game:GetService("TextService"):GetTextSize(dispName,14,Enum.Font.SourceSans,Vector2.new(math.huge,20)).X
 
 				fullNameFrame.TextLabel.Text = dispName
 				--fullNameFrame.Position = UDim2.new(0,Properties.EntryIndent*(prop.Depth or 1) + Properties.EntryOffset,0,23*(index-1))
@@ -11993,7 +11993,7 @@ local function main()
 			if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
 
 			local releaseEvent,mouseEvent
-			releaseEvent = service.UserInputService.InputEnded:Connect(function(input)
+			releaseEvent = game:GetService("UserInputService").InputEnded:Connect(function(input)
 				if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
 				releaseEvent:Disconnect()
 				mouseEvent:Disconnect()
@@ -12020,7 +12020,7 @@ local function main()
 			end
 			update(input)
 
-			mouseEvent = service.UserInputService.InputChanged:Connect(function(input)
+			mouseEvent = game:GetService("UserInputService").InputChanged:Connect(function(input)
 				if input.UserInputType == Enum.UserInputType.MouseMovement then
 					update(input)
 				end
@@ -14402,8 +14402,8 @@ Main = (function()
 		return
 			syn and syn.protect_gui or
 			gethui and gethui() or
-			service.CoreGui or
-			service.Players.LocalPlayer:WaitForChild("PlayerGui")
+			game:GetService("CoreGui") or
+			game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
 	end
 
 	Main.SecureGui = function(gui)
@@ -14414,18 +14414,18 @@ Main = (function()
 			gui.Parent = gethui()
 		elseif syn and syn.protect_gui then
 			syn.protect_gui(gui)
-			gui.Parent = service.CoreGui
+			gui.Parent = game:GetService("CoreGui")
 		elseif protect_gui then
 			protect_gui(gui)
-			gui.Parent = service.CoreGui
+			gui.Parent = game:GetService("CoreGui")
 		elseif protectgui then
 			protectgui(gui)
-			gui.Parent = service.CoreGui
+			gui.Parent = game:GetService("CoreGui")
 		else
 			if Main.Elevated then
-				gui.Parent = service.CoreGui
+				gui.Parent = game:GetService("CoreGui")
 			else
-				gui.Parent = service.Players.LocalPlayer:WaitForChild("PlayerGui")
+				gui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
 			end
 		end
 	end
@@ -14476,7 +14476,7 @@ Main = (function()
 					local s,hashDataStr = pcall(oldgame.HttpGet, game, "https://api.github.com/repos/"..Main.GitRepoName.."/ModuleHashs.dat")
 					if not s then Main.Error("Failed to get module hashs") end
 
-					local s,hashData = pcall(service.HttpService.JSONDecode,service.HttpService,hashDataStr)
+					local s,hashData = pcall(game:GetService("HttpService").JSONDecode,game:GetService("HttpService"),hashDataStr)
 					if not s then Main.Error("Failed to decode module hash JSON") end
 
 					hashs = hashData
@@ -14745,7 +14745,7 @@ Main = (function()
 			Main.Executor = identifyexecutor()
 		end
 
-		Main.GuiHolder = Main.Elevated and service.CoreGui or plr:FindFirstChildOfClass("PlayerGui")
+		Main.GuiHolder = Main.Elevated and game:GetService("CoreGui") or plr:FindFirstChildOfClass("PlayerGui")
 
 		setmetatable(env,nil)
 	end
@@ -14853,7 +14853,7 @@ Main = (function()
 		-- serialize color3 sebelum encode
 		local serializedData = recur(rawData)
 
-		local s, json = pcall(service.HttpService.JSONEncode, service.HttpService, serializedData)
+		local s, json = pcall(game:GetService("HttpService").JSONEncode, game:GetService("HttpService"), serializedData)
 		if s and json then
 			return json
 		end
@@ -14866,7 +14866,7 @@ Main = (function()
 		local s, data = pcall(env.readfile or error, "DexPlusPlusSettings.json")
 		if s and data and data ~= "" then
 
-			local s, decoded = pcall(service.HttpService.JSONDecode, service.HttpService, data)
+			local s, decoded = pcall(game:GetService("HttpService").JSONDecode, game:GetService("HttpService"), data)
 			if s and decoded then
 
 				local function recur(tbl)
@@ -14947,7 +14947,7 @@ Main = (function()
 		downloaded = true
 
 		Main.RawAPI = rawAPI
-		api = service.HttpService:JSONDecode(rawAPI)
+		api = game:GetService("HttpService"):JSONDecode(rawAPI)
 
 		local classes,enums = {},{}
 		local categoryOrder,seenCategories = {},{}
@@ -15225,7 +15225,7 @@ Main = (function()
 		local creatorGradient = creatorText.UIGradient
 		local statusText = gui.Main.Holder.StatusText
 		local progressBar = gui.Main.Holder.ProgressBar
-		local tweenS = service.TweenService
+		local tweenS = game:GetService("TweenService")
 
 		local renderStepped = game:GetService("RunService").RenderStepped
 		local signalWait = renderStepped.wait
@@ -15393,7 +15393,7 @@ Main = (function()
 
 		updateState()
 
-		local ySize = service.TextService:GetTextSize(data.Name,14,Enum.Font.SourceSans,Vector2.new(62,999999)).Y
+		local ySize = game:GetService("TextService"):GetTextSize(data.Name,14,Enum.Font.SourceSans,Vector2.new(62,999999)).Y
 		app.Main.Size = UDim2.new(1,0,0,math.clamp(46+ySize,60,74))
 		app.Main.AppName.Text = data.Name
 
@@ -15439,7 +15439,7 @@ Main = (function()
 		if val then Main.MainGui.OpenButton.MainFrame.Visible = true end
 		Main.MainGui.OpenButton.MainFrame:TweenSize(val and UDim2.new(0,224,0,200) or UDim2.new(0,0,0,0),Enum.EasingDirection.Out,Enum.EasingStyle.Quad,0.2,true)
 		--Main.MainGui.OpenButton.BackgroundTransparency = val and 0 or (Lib.CheckMouseInGui(Main.MainGui.OpenButton) and 0 or 0.2)
-		service.TweenService:Create(Main.MainGui.OpenButton,TweenInfo.new(0.2,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{BackgroundTransparency = val and 0 or (Lib.CheckMouseInGui(Main.MainGui.OpenButton) and 0 or 0.2)}):Play()
+		game:GetService("TweenService"):Create(Main.MainGui.OpenButton,TweenInfo.new(0.2,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{BackgroundTransparency = val and 0 or (Lib.CheckMouseInGui(Main.MainGui.OpenButton) and 0 or 0.2)}):Play()
 
 		if Main.MainGuiMouseEvent then Main.MainGuiMouseEvent:Disconnect() end
 
@@ -15451,7 +15451,7 @@ Main = (function()
 				if not Main.MainGuiOpen and startTime == Main.MainGuiCloseTime then Main.MainGui.OpenButton.MainFrame.Visible = false end
 			end)()
 		else
-			Main.MainGuiMouseEvent = service.UserInputService.InputBegan:Connect(function(input)
+			Main.MainGuiMouseEvent = game:GetService("UserInputService").InputBegan:Connect(function(input)
 				if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and not Lib.CheckMouseInGui(Main.MainGui.OpenButton) and not Lib.CheckMouseInGui(Main.MainGui.OpenButton.MainFrame) then
 
 					Main.SetMainGuiOpen(false)
@@ -15501,13 +15501,13 @@ Main = (function()
 
 		openButton.InputBegan:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-				service.TweenService:Create(Main.MainGui.OpenButton,TweenInfo.new(0,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{BackgroundTransparency = 0}):Play()
+				game:GetService("TweenService"):Create(Main.MainGui.OpenButton,TweenInfo.new(0,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{BackgroundTransparency = 0}):Play()
 			end
 		end)
 
 		openButton.InputEnded:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-				service.TweenService:Create(Main.MainGui.OpenButton,TweenInfo.new(0,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{BackgroundTransparency = Main.MainGuiOpen and 0 or 0.2}):Play()
+				game:GetService("TweenService"):Create(Main.MainGui.OpenButton,TweenInfo.new(0,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{BackgroundTransparency = Main.MainGuiOpen and 0 or 0.2}):Play()
 			end
 		end)
 
