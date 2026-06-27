@@ -2763,7 +2763,7 @@ local function main()
 				if not game:GetService("Players").LocalPlayer.Character or not game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart") or not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:IsA("BasePart") then return end
 
 				return {
-					Headers = {"local isa = game.IsA", "local hrp = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart"},
+					Headers = {"local isa = game.IsA", "local hrp = game:GetService(\"Players\").LocalPlayer.Character.HumanoidRootPart"},
 					Setups = {"local hrpPos = hrp.Position"},
 					ObjectDefs = {"local isBasePart = isa(obj,'BasePart')"},
 					Predicate = "(isBasePart and (obj.Position-hrpPos).Magnitude <= "..num..")"
